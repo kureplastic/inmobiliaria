@@ -121,4 +121,36 @@ public class RepositorioContrato
         }
         return res;
     }
+
+    public int EliminarContrato(int id)
+    {
+        int res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString)){
+            var query = @"DELETE FROM contratos WHERE Id = @Id";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@Id", id);
+            connection.Open();
+            res = Convert.ToInt32(command.ExecuteNonQuery());
+            connection.Close();
+        }
+        return res;
+    }
+
+    public int ActualizarContrato(Contrato contrato){
+        int res = -1;
+        using (MySqlConnection connection = new MySqlConnection(connectionString)){
+            var query = @"UPDATE contratos SET FechaInicio = @FechaInicio, FechaFin = @FechaFin, MontoMensual = @MontoMensual, InquilinoId = @InquilinoId
+                        WHERE Id = @Id";
+            MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@FechaInicio", contrato.FechaInicio);
+            command.Parameters.AddWithValue("@FechaFin", contrato.FechaFin);
+            command.Parameters.AddWithValue("@MontoMensual", contrato.MontoMensual);
+            command.Parameters.AddWithValue("@InquilinoId", contrato.InquilinoId);
+            command.Parameters.AddWithValue("@Id", contrato.Id);
+            connection.Open();
+            res = Convert.ToInt32(command.ExecuteNonQuery());
+            connection.Close();
+        }
+        return res;
+    }
 }

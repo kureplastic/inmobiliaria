@@ -50,19 +50,50 @@ namespace inmobiliaria.Controllers
         // GET: Contratos/Create
         public ActionResult Registrar()
         {
-            return View();
+            List<Inmueble> Inmuebles = repositorioInmueble.ObtenerInmuebles();
+            List<Propietario> Propietarios = repositorioPropietario.ObtenerPropietarios();
+            List<Inquilino> Inquilinos = repositorioInquilino.ObtenerInquilinos();
+           
+            ViewData["Inmuebles"] = Inmuebles;
+            ViewData["Propietarios"] = Propietarios;
+            ViewData["Inquilinos"] = Inquilinos;
+            try
+            {
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
 
         // POST: Contratos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Registrar(IFormCollection collection)
+        public ActionResult Registrar(Contrato contrato)
         {
+            //para el control de las fechas correctas
+            //traer todos los contratos por contrato.InmuebleId
+            //setear un datetime con fechaActual
+            // Control if(contrato.FechaInicio < contrato.FechaFin)
+            // control if(contrato.FechaInicio > fechaActual && contrato.FechaFin > fechaActual)
+            // para cada contrato habilitadod del listado de contratos,
+            //      comparar que tanto fechaInicio como FechaFin de cada uno
+            //      no esten entre contrato.FechaInicio y contrato.FechaFin 
             try
             {
                 // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
+                int res = repositorioContrato.RegistrarContrato(contrato);
+                if(res > 0){
+                    TempData["Estado"] = true;
+                    TempData["Mensaje"] = "El contrato se registro correctamente";
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El contrato no se registro correctamente";
+                    return View(contrato);
+                }
             }
             catch
             {
@@ -73,19 +104,16 @@ namespace inmobiliaria.Controllers
         // GET: Contratos/Edit/5
         public ActionResult Editar(int id)
         {
-            return View();
-        }
-
-        // POST: Contratos/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, IFormCollection collection)
-        {
             try
             {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
+                var modelo = repositorioContrato.ObtenerContrato(id);
+                if(modelo == null){
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El contrato solicitado no existe";
+                    return RedirectToAction("Index");
+                }
+                ViewData["Inquilinos"] = repositorioInquilino.ObtenerInquilinos();
+                return View(modelo);
             }
             catch
             {
@@ -93,22 +121,71 @@ namespace inmobiliaria.Controllers
             }
         }
 
+        // POST: Contratos/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Editar(int id, Contrato  contrato)
+        {
+            int res = -1;
+            try
+            {
+                res = repositorioContrato.ActualizarContrato(contrato);
+                if(res > 0){
+                    TempData["Estado"] = true;
+                    TempData["Mensaje"] = "El contrato se actualizo correctamente";
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El contrato no se pudo actualizar";
+                    return View(contrato);
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Estado"] = false;
+                TempData["Mensaje"] = "Error al actualizar el contrato" + ex;
+                return View(contrato);
+            }
+        }
+
         // GET: Contratos/Delete/5
         public ActionResult Eliminar(int id)
         {
-            return View();
+            try{
+                var modelo = repositorioContrato.ObtenerContrato(id);
+                if(modelo == null){
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El contrato solicitado no existe";
+                    return RedirectToAction("Index");
+                }
+                return View(modelo);
+            }catch(Exception ex)
+            {
+                throw;
+            }
         }
 
         // POST: Contratos/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Eliminar(int id, IFormCollection collection)
+        public ActionResult Eliminar(int id, Contrato contrato)
         {
+            int res = -1;
             try
             {
                 // TODO: Add delete logic here
-
-                return RedirectToAction(nameof(Index));
+                res = repositorioContrato.EliminarContrato(id);
+                if(res > 0){
+                    TempData["Estado"] = true;
+                    TempData["Mensaje"] = "El contrato se elimino correctamente";
+                    return RedirectToAction(nameof(Index));
+                }
+                else{
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El contrato no se pudo eliminar";
+                    return View(contrato);
+                }
             }
             catch
             {

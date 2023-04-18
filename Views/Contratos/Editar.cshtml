@@ -1,7 +1,8 @@
 @model inmobiliaria.Models.Contrato
 
 @{
-    ViewData["Title"] = "Editar";
+    ViewData["Title"] = "Editar Contrato";
+    var inquilinos = (IList<Inquilino>)ViewData["Inquilinos"];
 }
 
 <h1>Editar</h1>
@@ -13,48 +14,54 @@
         <form asp-action="Editar">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="InquilinoId" class="control-label"></label>
-                <input asp-for="InquilinoId" class="form-control" />
+                <select class="form-select" name="InquilinoId" required>
+                    <option value="@Model.InquilinoId">@Model.inquilino.ToString()</option>
+                    @foreach (var item in inquilinos)
+                    {
+                        <option value="@item.Id">@(item.ToString())</option>
+                    }
+                </select>
                 <span asp-validation-for="InquilinoId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PropietarioId" class="control-label"></label>
-                <input asp-for="PropietarioId" class="form-control" />
+                <select class="form-select" name="PropietarioId" required disabled>
+                    <option value="@Model.PropietarioId">@Model.propietario.ToString()</option>
+                </select>
                 <span asp-validation-for="PropietarioId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="InmuebleId" class="control-label"></label>
-                <input asp-for="InmuebleId" class="form-control" />
+                <select class="form-select" name="InmuebleId" required disabled>
+                    <option value="@Model.InmuebleId">@Model.inmueble.ToString()</option>
+                </select>
                 <span asp-validation-for="InmuebleId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaInicio" class="control-label"></label>
-                <input asp-for="FechaInicio" class="form-control" />
+                <input asp-for="FechaInicio" type="date" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" class="form-control" required/>
                 <span asp-validation-for="FechaInicio" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FechaFin" class="control-label"></label>
-                <input asp-for="FechaFin" class="form-control" />
+                <input asp-for="FechaFin" type="date" value="@Model.FechaFin.ToString("yyyy-MM-dd")" class="form-control" required/>
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="MontoMensual" class="control-label"></label>
-                <input asp-for="MontoMensual" class="form-control" />
+                <input asp-for="MontoMensual" value="@Model.MontoMensual" class="form-control" required/>
                 <span asp-validation-for="MontoMensual" class="text-danger"></span>
             </div>
+            <br>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Editar" class="btn btn-dark" />
             </div>
         </form>
     </div>
 </div>
-
+<br>
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Volver</a>
 </div>
 
