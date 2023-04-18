@@ -9,7 +9,7 @@ using inmobiliaria.Models;
 namespace inmobiliaria.Controllers
 {
     public class ContratosController : Controller
-    {   
+    {
         private readonly RepositorioContrato repositorioContrato;
         private readonly RepositorioInmueble repositorioInmueble;
         private readonly RepositorioPropietario repositorioPropietario;
@@ -33,15 +33,18 @@ namespace inmobiliaria.Controllers
         // GET: Contratos/Details/5
         public ActionResult Detalles(int id)
         {
-            try{
+            try
+            {
                 var modelo = repositorioContrato.ObtenerContrato(id);
-                if(modelo == null){
+                if (modelo == null)
+                {
                     TempData["Estado"] = false;
                     TempData["Mensaje"] = "El contrato solicitado no existe";
                     return RedirectToAction("Index");
                 }
                 return View(modelo);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw;
             }
@@ -53,7 +56,8 @@ namespace inmobiliaria.Controllers
             List<Inmueble> Inmuebles = repositorioInmueble.ObtenerInmuebles();
             List<Propietario> Propietarios = repositorioPropietario.ObtenerPropietarios();
             List<Inquilino> Inquilinos = repositorioInquilino.ObtenerInquilinos();
-           
+            ViewData["Estado"] = TempData["Estado"];
+            ViewData["Mensaje"] = TempData["Mensaje"];  
             ViewData["Inmuebles"] = Inmuebles;
             ViewData["Propietarios"] = Propietarios;
             ViewData["Inquilinos"] = Inquilinos;
@@ -72,27 +76,30 @@ namespace inmobiliaria.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Registrar(Contrato contrato)
         {
-            //para el control de las fechas correctas
-            //traer todos los contratos por contrato.InmuebleId
-            //setear un datetime con fechaActual
-            // Control if(contrato.FechaInicio < contrato.FechaFin)
-            // control if(contrato.FechaInicio > fechaActual && contrato.FechaFin > fechaActual)
-            // para cada contrato habilitadod del listado de contratos,
-            //      comparar que tanto fechaInicio como FechaFin de cada uno
-            //      no esten entre contrato.FechaInicio y contrato.FechaFin 
             try
             {
                 // TODO: Add insert logic here
-                int res = repositorioContrato.RegistrarContrato(contrato);
-                if(res > 0){
-                    TempData["Estado"] = true;
-                    TempData["Mensaje"] = "El contrato se registro correctamente";
-                    return RedirectToAction(nameof(Index));
-                }
-                else{
+                Propietario p = repositorioInmueble.ObtenerInmueble(contrato.InmuebleId).propietario;
+                contrato.PropietarioId = p.Id;
+                if (ValidarFechasContrato(contrato))
+                {
+                    int res = repositorioContrato.RegistrarContrato(contrato);
+                    if (res > 0)
+                    {
+                        TempData["Estado"] = true;
+                        TempData["Mensaje"] = "El contrato se registro correctamente";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        TempData["Estado"] = false;
+                        TempData["Mensaje"] = "El contrato no se registro correctamente";
+                        return View(contrato);
+                    }
+                }else
+                {
                     TempData["Estado"] = false;
-                    TempData["Mensaje"] = "El contrato no se registro correctamente";
-                    return View(contrato);
+                    return RedirectToAction(nameof(Registrar), contrato);
                 }
             }
             catch
@@ -107,7 +114,8 @@ namespace inmobiliaria.Controllers
             try
             {
                 var modelo = repositorioContrato.ObtenerContrato(id);
-                if(modelo == null){
+                if (modelo == null)
+                {
                     TempData["Estado"] = false;
                     TempData["Mensaje"] = "El contrato solicitado no existe";
                     return RedirectToAction("Index");
@@ -124,18 +132,20 @@ namespace inmobiliaria.Controllers
         // POST: Contratos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, Contrato  contrato)
+        public ActionResult Editar(int id, Contrato contrato)
         {
             int res = -1;
             try
             {
                 res = repositorioContrato.ActualizarContrato(contrato);
-                if(res > 0){
+                if (res > 0)
+                {
                     TempData["Estado"] = true;
                     TempData["Mensaje"] = "El contrato se actualizo correctamente";
                     return RedirectToAction(nameof(Index));
                 }
-                else{
+                else
+                {
                     TempData["Estado"] = false;
                     TempData["Mensaje"] = "El contrato no se pudo actualizar";
                     return View(contrato);
@@ -152,15 +162,18 @@ namespace inmobiliaria.Controllers
         // GET: Contratos/Delete/5
         public ActionResult Eliminar(int id)
         {
-            try{
+            try
+            {
                 var modelo = repositorioContrato.ObtenerContrato(id);
-                if(modelo == null){
+                if (modelo == null)
+                {
                     TempData["Estado"] = false;
                     TempData["Mensaje"] = "El contrato solicitado no existe";
                     return RedirectToAction("Index");
                 }
                 return View(modelo);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw;
             }
@@ -176,12 +189,14 @@ namespace inmobiliaria.Controllers
             {
                 // TODO: Add delete logic here
                 res = repositorioContrato.EliminarContrato(id);
-                if(res > 0){
+                if (res > 0)
+                {
                     TempData["Estado"] = true;
                     TempData["Mensaje"] = "El contrato se elimino correctamente";
                     return RedirectToAction(nameof(Index));
                 }
-                else{
+                else
+                {
                     TempData["Estado"] = false;
                     TempData["Mensaje"] = "El contrato no se pudo eliminar";
                     return View(contrato);
@@ -192,5 +207,33 @@ namespace inmobiliaria.Controllers
                 return View();
             }
         }
+
+        public Boolean ValidarFechasContrato(Contrato contrato)
+        {
+            var fechaActual = DateTime.Now;
+            var contratos = repositorioContrato.ObtenerContratosPorInmueble(contrato.InmuebleId);
+
+            if (DateTime.Compare(contrato.FechaInicio, fechaActual) < 0 || DateTime.Compare(contrato.FechaFin, fechaActual) < 0)
+            {
+                TempData["Mensaje"] = "Las fechas no pueden ser menores a la fecha actual";
+                return false;
+            }
+            if(DateTime.Compare(contrato.FechaInicio, contrato.FechaFin) > 0){
+                TempData["Mensaje"] = "Las fecha de inicio del contrato no pueden ser mayor que la fecha final del contrato";
+                return false;
+            }
+            foreach(var c in contratos){//que la fecha de inicio de los contratos existentes no este entre la fecha de inicio y la de final del contrato a validar
+                if(contrato.FechaInicio <= c.FechaInicio && contrato.FechaFin >= c.FechaInicio){
+                    TempData["Mensaje"] = "esta fecha se encuentra ocupada por otro contrato";
+                    return false;
+                }//que la fecha de fin de los contratos existentes no este entre la fecha de inicio y la de final del contrato a validar
+                if(contrato.FechaInicio <= c.FechaFin && contrato.FechaFin >= c.FechaFin){
+                    TempData["Mensaje"] = "esta fecha se encuentra ocupada por otro contrato";
+                    return false;
+                }
+            }
+            return true;
+        }
+        
     }
 }
