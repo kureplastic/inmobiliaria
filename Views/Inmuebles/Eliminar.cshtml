@@ -1,0 +1,57 @@
+@model inmobiliaria.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Eliminar";
+}
+
+<h1>Eliminar</h1>
+
+<h3 class="display-6">Esta seguro que desea eliminar al Inmueble?</h3>
+<div>
+    <br>
+    <h4>Inmueble</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Direccion)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Direccion)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Tipo)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Tipo)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Ambientes)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Ambientes)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Precio)
+        </dt>
+        <dd class = "col-sm-10">
+            $ @Html.DisplayFor(model => model.Precio)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Estado)
+        </dt>
+        <dd class = "col-sm-10">
+            @if (@Model.Estado) { <span class="text-success">Disponible</span> } else { <span class="text-danger">No Disponible</span> }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PropietarioId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Model.propietario.ToString()
+        </dd>
+    </dl>
+    
+    <form asp-action="Eliminar">
+        <input type="submit" value="Eliminar" class="btn btn-danger" /> |
+        <a asp-action="Index">Volver</a>
+    </form>
+</div>

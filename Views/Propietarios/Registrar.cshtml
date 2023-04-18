@@ -1,0 +1,48 @@
+@model inmobiliaria.Models.Propietario;
+@{
+    ViewData["Title"] = "Registrar Propietario";
+}
+
+<h1>Registrar</h1>
+
+<h4>Propietario</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Registrar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Dni" class="control-label">Dni</label>
+                <input asp-for="Dni" class="form-control" required/>
+                <span asp-validation-for="Dni" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label">Nombre</label>
+                <input asp-for="Nombre" class="form-control" required/>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label">Apellido</label>
+                <input asp-for="Apellido" class="form-control" required/>
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telefono" class="control-label">Telefono</label>
+                <input asp-for="Telefono" class="form-control" type="number"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label">Email</label>
+                <input type="email" asp-for="Email" class="form-control" required/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="submit" value="Registrar" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver</a>
+</div>  

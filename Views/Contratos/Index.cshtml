@@ -1,0 +1,69 @@
+@model IEnumerable<inmobiliaria.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Listado de Contratos";
+}
+
+<h1 class="text-center display-4">Contratos</h1>
+<span>form para filtros de contratos quizas</span>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InquilinoId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PropietarioId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InmuebleId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaFin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MontoMensual)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                <a asp-action="Detalles" asp-controller="Inquilinos" asp-route-id="@item.InquilinoId" >@item.inquilino.ToString()</a>
+            </td>
+            <td>
+                <a asp-action="Detalles" asp-controller="Propietarios" asp-route-id="@item.PropietarioId" >@item.propietario.ToString()</a>
+            </td>
+            <td>
+                <a asp-action="Detalles" asp-controller="Inmuebles" asp-route-id="@item.InmuebleId" >@item.inmueble.ToString()</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaFin)
+            </td>
+            <td>
+               $ @Html.DisplayFor(modelItem => item.MontoMensual)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Editar", new { id=item.Id}) |
+                @Html.ActionLink("Detalles", "Detalles", new { id=item.Id }) |
+                @Html.ActionLink("Eliminar", "Eliminar", new { id=item.Id}) |
+                <a asp-action="PagosPorContrato" asp-controller="Pagos" asp-route-id="@item.Id" title="Ver Pagos"><span >Ver Pagos</span></a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -1,0 +1,67 @@
+@model inmobiliaria.Models.Inmueble
+
+@{
+    ViewData["Title"] = "Editar";
+    List<Propietario> propietarios = ViewData["Propietarios"] as List<Propietario>;
+    string tipo = Model.Tipo;
+}
+
+<h1>Editar</h1>
+
+<h4>Inmueble</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Editar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Direccion" class="control-label"></label>
+                <input asp-for="Direccion" class="form-control" required/>
+                <span asp-validation-for="Direccion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Tipo" class="control-label"></label>
+                <select class="form-select" name="Tipo" required disabled>
+                    <option selected value="@Model.Tipo" >@Html.DisplayFor(modelItem => modelItem.Tipo) </option>
+                </select>
+                <span asp-validation-for="Tipo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Ambientes" class="control-label"></label>
+                <input asp-for="Ambientes" class="form-control" required />
+                <span asp-validation-for="Ambientes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Precio" class="control-label"></label>
+                <input asp-for="Precio" class="form-control" required/>
+                <span asp-validation-for="Precio" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Estado" class="control-label"></label>
+                    <select class="form-select" name="Estado" required>
+                        @(Model.Estado? @Html.Raw("<option value=true selected >Disponible</option><option value=false'>No Disponible</option>") : 
+                                        @Html.Raw("<option value=true>Disponible</option><option selected value=false>No Disponible</option>"));
+                    </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="PropietarioId" class="control-label"></label>
+                <select class="form-select" name="PropietarioId" required disabled>
+                    @foreach (var item in propietarios)
+                    {
+                        @:<option @(item.Id==Model.PropietarioId ? "selected" : "") value="@item.Id">@(item.ToString())</option>
+                    }
+				</select>
+                <span asp-validation-for="PropietarioId" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="submit" value="Editar" class="btn btn-dark" />
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+

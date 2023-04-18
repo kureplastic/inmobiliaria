@@ -1,0 +1,93 @@
+@model inmobiliaria.Models.Inquilino
+
+@{
+    ViewData["Title"] = "Detalles";
+}
+
+<h1>Detalles</h1>
+
+<div>
+    <h4>Inquilino</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Dni)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Dni)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Nombre)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Nombre)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Apellido)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Apellido)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.LugarTrabajo)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.LugarTrabajo != "") {
+                    @Html.DisplayFor(modelItem => Model.LugarTrabajo);
+            }
+            else {
+                <div><strong>no registrado</strong></div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Telefono)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Telefono)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.Email != "") {
+                    @Html.DisplayFor(modelItem => Model.Email);
+            }
+            else {
+                <div><strong>no registrado</strong></div>
+            }
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NombreGarante)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NombreGarante)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.DniGarante)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.DniGarante)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.TelefonoGarante)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.TelefonoGarante)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.EmailGarante)
+        </dt>
+        <dd class = "col-sm-10">
+            @if(Model.EmailGarante != "") {
+                    @Html.DisplayFor(modelItem => Model.EmailGarante);
+            }
+            else {
+                <div><strong>no registrado</strong></div>
+            }
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Editar", "Editar", new { id = Model.Id }) |
+    <a asp-action="Index">Volver</a>
+</div>

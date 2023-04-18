@@ -1,0 +1,97 @@
+@model IEnumerable<Propietario>
+@{
+    ViewData["Title"] = "Listado de Propietarios";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Propietarios</h1>
+
+
+<p>
+    <a asp-action="Registrar">Registrar Nuevo</a>
+</p>
+
+@if (Model.Any()){
+    @if(ViewData["buscar"] == null){
+        <form asp-action="Buscar">
+        <div class="input-group">
+            <select class="form-select "name="Propietarios">
+                <option value="">Seleccione un Propietario</option>
+                    @foreach (var item in Model) {
+                        <option value="@item.Id">@item.ToString()</option>
+                    }
+            </select>
+            
+            <span class="input-group-btn">
+                <input type="submit" value="Buscar" class="btn btn-dark"  />
+            </span>
+
+        </div>
+    </form>
+    }
+    <div>
+        <table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Dni)
+            </th>
+			<th>
+                @Html.DisplayNameFor(model => model.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Telefono)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                Acciones
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Dni)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Nombre)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Apellido)
+            </td>
+            <td>
+                @if (item.Telefono != null) {
+                    @Html.DisplayFor(modelItem => item.Telefono)
+                } else {
+                    <p>------</p>
+                }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+			<td>
+				<a asp-action="Editar" asp-route-id="@item.Id" title="Editar"><span >Editar</span></a>&nbsp; | 
+                <a asp-action="Detalles" asp-route-id="@item.Id" title="Detalles"><span >Detalles</span></a>&nbsp; | 
+				<a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span >Eliminar</span></a> | 
+				<a asp-action="PorPropietario" asp-controller="Propiedades" asp-route-id="@item.Id" title="Propiedades Vinculadas"><span ></span></a>
+                @Html.ActionLink("Propiedades Vinculadas", "PorPropietario", "Propiedades", new { id= item.Id })
+			</td>
+        </tr>
+}
+    </tbody>
+</table>
+</div>
+@if(ViewData["buscar"] != null){
+        <a class="link-light" asp-area="" asp-controller="Propietarios" asp-action="Index" ><button class="btn btn-dark">Volver</button></a>
+    }
+}
+else{
+    <p>No hay propietarios registrados</p>
+}
+</div>
