@@ -1,7 +1,25 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(options =>
+{
+    options.LoginPath = "/Usuarios/Login";
+    options.LogoutPath = "/Usuarios/Logout";
+    options.AccessDeniedPath = "/Usuarios/Restringido";
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    //options.AddPolicy("Operador", policy => policy.RequireClaim(ClaimTypes.Name, "Administrador", "Operador"));
+    options.AddPolicy("Administrador", policy => policy.RequireRole("Administrador"));
+    //options.AddPolicy("Operador", policy => policy.RequireRole("Operador"));
+});
 
 var app = builder.Build();
 
@@ -18,6 +36,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();    
 app.UseAuthorization();
 
 app.MapControllerRoute(

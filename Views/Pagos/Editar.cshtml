@@ -1,0 +1,46 @@
+@model inmobiliaria.Models.Pago
+
+@{
+    ViewData["Title"] = "Editar Pago";
+}
+
+<h1>Editar</h1>
+
+<h4>Pago</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Editar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ContratoId" class="control-label"></label>
+                <input asp-for="ContratoId" class="form-control" readonly/>
+                <span asp-validation-for="ContratoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="numPago" class="control-label"></label>
+                <input asp-for="numPago" class="form-control" required/>
+                <span asp-validation-for="numPago" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="fechaPago" class="control-label"></label>
+                <input asp-for="fechaPago" class="form-control" required/>
+                <span asp-validation-for="fechaPago" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="importe" class="control-label"></label>
+                <input asp-for="importe" class="form-control" required/>
+                <span asp-validation-for="importe" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group">
+                <input type="submit" value="Editar" class="btn btn-dark" />
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<div>
+    <a asp-action="Index">Volver</a>
+</div>
+

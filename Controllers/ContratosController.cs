@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers
 {
+    [Authorize]
     public class ContratosController : Controller
     {
         private readonly RepositorioContrato repositorioContrato;
@@ -160,6 +162,7 @@ namespace inmobiliaria.Controllers
         }
 
         // GET: Contratos/Delete/5
+        [Authorize (Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try
@@ -180,6 +183,7 @@ namespace inmobiliaria.Controllers
         }
 
         // POST: Contratos/Delete/5
+         [Authorize (Policy = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Eliminar(int id, Contrato contrato)
@@ -222,18 +226,17 @@ namespace inmobiliaria.Controllers
                 TempData["Mensaje"] = "Las fecha de inicio del contrato no pueden ser mayor que la fecha final del contrato";
                 return false;
             }
-            foreach(var c in contratos){//que la fecha de inicio de los contratos existentes no este entre la fecha de inicio y la de final del contrato a validar
-                if(contrato.FechaInicio <= c.FechaInicio && contrato.FechaFin >= c.FechaInicio){
+            foreach(var c in contratos){//que la fecha de inicio del contrato a crear no este dentro de las fecha de inicio y de fin de ningun otro contrato.
+                if(c.FechaInicio <= contrato.FechaInicio && c.FechaFin >= contrato.FechaInicio){
                     TempData["Mensaje"] = "esta fecha se encuentra ocupada por otro contrato";
                     return false;
-                }//que la fecha de fin de los contratos existentes no este entre la fecha de inicio y la de final del contrato a validar
-                if(contrato.FechaInicio <= c.FechaFin && contrato.FechaFin >= c.FechaFin){
+                }//que la fecha de fin del contrato a crear no este dentro de las fechas de inicio y de fin de ningun otro contrato.
+                if(c.FechaInicio <= contrato.FechaFin && c.FechaFin >= contrato.FechaFin){
                     TempData["Mensaje"] = "esta fecha se encuentra ocupada por otro contrato";
                     return false;
                 }
             }
             return true;
         }
-        
     }
 }

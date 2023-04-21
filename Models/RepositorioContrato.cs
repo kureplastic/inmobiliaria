@@ -57,7 +57,7 @@ public class RepositorioContrato
     }
     public Contrato ObtenerContrato(int id)
     {
-        Contrato contrato = new Contrato();
+        Contrato? contrato = null;
         using (MySqlConnection connection = new MySqlConnection(connectionString)){
             var query = @"SELECT c.Id, FechaInicio, FechaFin, MontoMensual, c.InmuebleId, c.PropietarioId, c.InquilinoId,
                         i.Direccion, i.Tipo,
@@ -66,35 +66,39 @@ public class RepositorioContrato
                         FROM contratos c
                         INNER JOIN inmuebles i ON c.InmuebleId = i.Id
                         INNER JOIN propietarios p ON c.PropietarioId = p.Id
-                        INNER JOIN inquilinos iq ON c.InquilinoId = iq.Id";
+                        INNER JOIN inquilinos iq ON c.InquilinoId = iq.Id
+                        WHERE c.Id = @id";
             MySqlCommand command = new MySqlCommand(query, connection);
+            command.Parameters.AddWithValue("@id", id);
             connection.Open();
             MySqlDataReader reader = command.ExecuteReader();
             while (reader.Read()){
-                contrato.Id = Convert.ToInt32(reader["Id"]);
-                contrato.FechaInicio = Convert.ToDateTime(reader["FechaInicio"]);
-                contrato.FechaFin = Convert.ToDateTime(reader["FechaFin"]);
-                contrato.MontoMensual = Convert.ToDecimal(reader["MontoMensual"]);
-                contrato.InmuebleId = Convert.ToInt32(reader["InmuebleId"]);
-                contrato.PropietarioId = Convert.ToInt32(reader["PropietarioId"]);
-                contrato.InquilinoId = Convert.ToInt32(reader["InquilinoId"]);
-                contrato.propietario = new Propietario{
-                    Dni = Convert.ToString(reader["PropietarioDni"]),
-                    Nombre = Convert.ToString(reader["PropietarioNombre"]),
-                    Apellido = Convert.ToString(reader["PropietarioApellido"]),
-                    Telefono = Convert.ToString(reader["PropietarioTelefono"]),
-                };
-                contrato.inquilino = new Inquilino{
-                    Dni = Convert.ToString(reader["InquilinoDni"]),
-                    Nombre = Convert.ToString(reader["InquilinoNombre"]),
-                    Apellido = Convert.ToString(reader["InquilinoApellido"]),
-                    Telefono = Convert.ToString(reader["InquilinoTelefono"]),
-                    NombreGarante = Convert.ToString(reader["NombreGarante"]),
-                    TelefonoGarante = Convert.ToString(reader["TelefonoGarante"]),
-                };
-                contrato.inmueble = new Inmueble{
-                    Direccion = Convert.ToString(reader["Direccion"]),
-                    Tipo = Convert.ToString(reader["Tipo"]),
+                contrato = new Contrato{
+                    Id = Convert.ToInt32(reader["Id"]),
+                    FechaInicio = Convert.ToDateTime(reader["FechaInicio"]),
+                    FechaFin = Convert.ToDateTime(reader["FechaFin"]),
+                    MontoMensual = Convert.ToDecimal(reader["MontoMensual"]),
+                    InmuebleId = Convert.ToInt32(reader["InmuebleId"]),
+                    PropietarioId = Convert.ToInt32(reader["PropietarioId"]),
+                    InquilinoId = Convert.ToInt32(reader["InquilinoId"]),
+                    propietario = new Propietario{
+                        Dni = Convert.ToString(reader["PropietarioDni"]),
+                        Nombre = Convert.ToString(reader["PropietarioNombre"]),
+                        Apellido = Convert.ToString(reader["PropietarioApellido"]),
+                        Telefono = Convert.ToString(reader["PropietarioTelefono"]),
+                    },
+                    inquilino = new Inquilino{
+                        Dni = Convert.ToString(reader["InquilinoDni"]),
+                        Nombre = Convert.ToString(reader["InquilinoNombre"]),
+                        Apellido = Convert.ToString(reader["InquilinoApellido"]),
+                        Telefono = Convert.ToString(reader["InquilinoTelefono"]),
+                        NombreGarante = Convert.ToString(reader["NombreGarante"]),
+                        TelefonoGarante = Convert.ToString(reader["TelefonoGarante"]),
+                    },
+                    inmueble = new Inmueble{
+                        Direccion = Convert.ToString(reader["Direccion"]),
+                        Tipo = Convert.ToString(reader["Tipo"]),
+                    }
                 };
             }
             connection.Close();

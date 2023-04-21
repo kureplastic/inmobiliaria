@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers
 {
+    [Authorize]
     public class InquilinosController : Controller
     {
         private readonly RepositorioInquilino repositorioInquilino;
@@ -128,6 +130,7 @@ namespace inmobiliaria.Controllers
         }
 
         // GET: Inquilinos/Delete/5
+         [Authorize (Policy = "Administrador")]
         public ActionResult Eliminar(int id)
         {
             try{
@@ -146,6 +149,7 @@ namespace inmobiliaria.Controllers
         }
 
         // POST: Inquilinos/Delete/5
+         [Authorize (Policy = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Eliminar(int id, Inquilino inquilino)

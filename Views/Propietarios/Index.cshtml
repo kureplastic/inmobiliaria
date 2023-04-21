@@ -76,9 +76,9 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
 			<td>
-				<a asp-action="Editar" asp-route-id="@item.Id" title="Editar"><span >Editar</span></a>&nbsp; | 
-                <a asp-action="Detalles" asp-route-id="@item.Id" title="Detalles"><span >Detalles</span></a>&nbsp; | 
-				<a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><span >Eliminar</span></a> | 
+				<a asp-action="Editar"  asp-route-id="@item.Id" title="Editar"><span class="fa-regular fa-pen-to-square fa-lg" style="color: #050505;"></span></a>&nbsp; | 
+                <a asp-action="Detalles" asp-route-id="@item.Id" title="Detalles"><span class="fa-solid fa-list fa-lg" style="color: #050505;"></a>&nbsp; | 
+				<a asp-action="Eliminar" asp-route-id="@item.Id" title="Eliminar"><i class="fa-regular fa-trash-can fa-lg"style="color: #050505;"></i></a> | 
 				<a asp-action="PorPropietario" asp-controller="Propiedades" asp-route-id="@item.Id" title="Propiedades Vinculadas"><span ></span></a>
                 @Html.ActionLink("Propiedades Vinculadas", "PorPropietario", "Propiedades", new { id= item.Id })
 			</td>

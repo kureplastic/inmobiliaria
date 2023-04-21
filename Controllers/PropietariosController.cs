@@ -1,7 +1,11 @@
-﻿using inmobiliaria.Models;
-using System.Diagnostics;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
+using inmobiliaria.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inmobiliaria.Controllers;
 
@@ -62,6 +66,7 @@ public class PropietariosController : Controller
     }
 
     // GET: Propietarios/Eliminar/5
+    [Authorize(Policy = "Administrador")]
     public ActionResult Eliminar(int id)
     {
         try
@@ -76,6 +81,7 @@ public class PropietariosController : Controller
     }
 
     // POST: Propietario/Delete/5
+    [Authorize(Policy = "Administrador")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Eliminar(int id, Propietario propietario)
