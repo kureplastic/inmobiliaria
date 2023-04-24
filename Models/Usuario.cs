@@ -1,14 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Inmobiliaria_.Net_Core.Models
-{
-	public enum enRoles
-	{
-		SuperAdministrador = 1,
-		Administrador = 2,
-		Empleado = 3,
-	}
+namespace inmobiliaria.Models;
 
 	public class Usuario
 	{
@@ -23,9 +16,10 @@ namespace Inmobiliaria_.Net_Core.Models
 		public string Email { get; set; }
 		[Required, DataType(DataType.Password)]
 		public string Clave { get; set; }
-		public string RutaAvatar { get; set; }
+		[Display(Name = "Foto Perfil")]
+		public string? RutaAvatar { get; set; }
 		[NotMapped]
-		public IFormFile AvatarFile { get; set; }
+		public IFormFile? AvatarFile { get; set; }
 		public int Rol { get; set; }
 		[NotMapped]
 		public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
@@ -41,4 +35,9 @@ namespace Inmobiliaria_.Net_Core.Models
 			return roles;
 		}
 	}
-}
+
+	public enum enRoles
+	{
+		Administrador = 1,
+		Empleado = 2,
+	}

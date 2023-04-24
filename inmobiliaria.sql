@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 18-04-2023 a las 05:27:20
+-- Tiempo de generación: 24-04-2023 a las 05:57:18
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 8.1.10
 
@@ -42,7 +42,8 @@ CREATE TABLE `contratos` (
 --
 
 INSERT INTO `contratos` (`Id`, `InquilinoId`, `PropietarioId`, `InmuebleId`, `fechaInicio`, `fechaFin`, `MontoMensual`) VALUES
-(00000001, 00000004, 00000001, 1, '2023-04-16 23:22:19', '2023-04-21 23:22:19', '30000');
+(00000001, 00000007, 00000001, 1, '2023-04-16 00:00:00', '2023-04-23 00:00:00', '31000'),
+(00000005, 00000004, 00000002, 3, '2023-04-20 00:00:00', '2023-04-23 00:00:00', '15000');
 
 -- --------------------------------------------------------
 
@@ -111,6 +112,13 @@ CREATE TABLE `pagos` (
   `importe` decimal(8,0) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Volcado de datos para la tabla `pagos`
+--
+
+INSERT INTO `pagos` (`Id`, `ContratoId`, `numPago`, `fechaPago`, `importe`) VALUES
+(00000003, 00000005, 123, '2023-04-23 03:00:00', '1235');
+
 -- --------------------------------------------------------
 
 --
@@ -133,6 +141,31 @@ CREATE TABLE `propietarios` (
 INSERT INTO `propietarios` (`id`, `dni`, `apellido`, `nombre`, `Telefono`, `email`) VALUES
 (00000001, '37811667', 'GONZALEZ', 'FRANCO', '2665017100', 'frangesgonzalez@gmail.com'),
 (00000002, '37811668', 'Gonzalez', 'Vale', '02665017100', 'kureplastic@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `usuarios`
+--
+
+CREATE TABLE `usuarios` (
+  `Id` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `Nombre` varchar(255) NOT NULL,
+  `Apellido` varchar(255) NOT NULL,
+  `Email` varchar(255) NOT NULL,
+  `Clave` varchar(255) NOT NULL,
+  `RutaAvatar` varchar(255) DEFAULT '',
+  `Rol` int(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `usuarios`
+--
+
+INSERT INTO `usuarios` (`Id`, `Nombre`, `Apellido`, `Email`, `Clave`, `RutaAvatar`, `Rol`) VALUES
+(00000003, 'MARIA ALEJANDRA', 'CHAPARRO', 'empleado@empleado.com', 'pxWrj7yQNAEK9f97AsVVTdrxztjnhHsK1pLdUPp/JYk=', '/Uploads\\9381a5be-547f-4ef0-9b98-d92eab416f32.png', 2),
+(00000004, 'FRAN', 'GONZALEZ', 'admin@admin.com', '+QogUQCvONpCL06DDAtvk3azOuAWyOjO9VCp3dnfvSA=', '', 1),
+(00000006, 'ema', 'ema', 'ema@ema', 'PGA7fYQ+g+1e3rHiB7PYzRd25/duU/YMbxZ2mzwhEX0=', '', 2);
 
 --
 -- Índices para tablas volcadas
@@ -177,6 +210,12 @@ ALTER TABLE `propietarios`
   ADD UNIQUE KEY `dni unico` (`dni`);
 
 --
+-- Indices de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  ADD PRIMARY KEY (`Id`);
+
+--
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -184,7 +223,7 @@ ALTER TABLE `propietarios`
 -- AUTO_INCREMENT de la tabla `contratos`
 --
 ALTER TABLE `contratos`
-  MODIFY `Id` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `Id` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `inmuebles`
@@ -202,13 +241,19 @@ ALTER TABLE `inquilinos`
 -- AUTO_INCREMENT de la tabla `pagos`
 --
 ALTER TABLE `pagos`
-  MODIFY `Id` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `propietarios`
 --
 ALTER TABLE `propietarios`
   MODIFY `id` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT de la tabla `usuarios`
+--
+ALTER TABLE `usuarios`
+  MODIFY `Id` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- Restricciones para tablas volcadas

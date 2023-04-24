@@ -1,9 +1,6 @@
 html {
   font-size: 14px;
 }
-html {
- 
-}
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -39,3 +36,11 @@ div.card-body {
   color: #ffffff;
 }
 
+img.img-home{
+  border-radius: 20px;
+}
+img.img-perfil{
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+}

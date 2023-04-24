@@ -1,0 +1,122 @@
+@model inmobiliaria.Models.Usuario
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<h1>Editar</h1>
+
+<h4>Usuario</h4>
+<hr />
+<div class="row">
+    <div class="col-sm-4">
+        <h4 class="display-6">Datos personales</h4>
+    </div>
+    <div class="col-sm-4">
+        <h4 class="display-6">Modificar Contraseña</h4>
+    </div>
+    <div class="col-sm-4">
+        <h5 class="display-6">Imagen de Perfil</h5>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <form asp-action="Editar">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" required/>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nombre" class="control-label"></label>
+                <input asp-for="Nombre" class="form-control" required/>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellido" class="control-label"></label>
+                <input asp-for="Apellido" class="form-control" required/>
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" required/>
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rol" class="control-label"></label>
+                @if(!User.IsInRole("Administrador")){
+                    <select class="form-select" name="Rol" required disabled>
+                    <option name="Rol" selected value="2">Empleado</option>
+                    <option name="Rol" value="1">Administrador</option>
+                </select>
+                }else{
+                <select class="form-select" name="Rol" required>
+                    <option value="2">Empleado</option>
+                    <option value="1">Administrador</option>
+                </select>
+                }
+                <span asp-validation-for="Rol" class="text-danger"></span>
+            </div>
+            <br>
+            <div class="form-group text-center">
+                <input type="submit" value="Editar" class="btn btn-dark" />
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-4">
+        <form asp-action="ModificarPassword">
+            <div class="form-group" hidden>
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" required/>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="ViejaPass">Contraseña actual</label>
+                <input type="password" name="ViejaPass" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="NuevaPass">Nueva contraseña</label>
+                <input type="password" name="NuevaPass" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="RepetirPass">Repetir contraseña</label>
+                <input type="password" name="RepetirPass" class="form-control" required>
+            </div>
+            <br>
+            <div class="form-group text-center">
+                <input type="submit" value="Modificar" class="btn btn-dark" />
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-4">
+        <form asp-action="ModificarFoto" enctype="multipart/form-data">
+            <div class="text-center">
+                @if(!string.IsNullOrEmpty(Model.RutaAvatar)){
+                    <img class="img-perfil" src="@Url.Content(Model.RutaAvatar)">
+                }else{
+                <img class="img-perfil" src="~/css/img/profile_default.jpg">
+                }
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="Id" class="control-label"></label>
+                <input asp-for="Id" class="form-control" required/>
+                <span asp-validation-for="Id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AvatarFile" class="control-label"></label>
+                <input type="file" name="AvatarFile" class="form-control">  
+            </div>
+            <br>
+            <div class="form-group text-center">
+                <input type="submit" value="Modificar" class="btn btn-dark" />
+            </div> 
+        </form>
+        
+    </div>
+</div>
+<br>
+<div>
+    @(User.IsInRole("Administrador") ? (@Html.ActionLink("Volver", "Index")) : (@Html.ActionLink("Volver", "Perfil")))
+</div>
+

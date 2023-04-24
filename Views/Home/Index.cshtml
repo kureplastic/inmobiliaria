@@ -1,10 +1,58 @@
 ﻿@{
     ViewData["Title"] = "Home";
+    var propietarios = ViewData["propietarios"] as List<inmobiliaria.Models.Propietario>;
+    var inquilinos = ViewData["inquilinos"] as List<inmobiliaria.Models.Inquilino>;
+    var inmuebles = ViewData["inmuebles"] as List<inmobiliaria.Models.Inmueble>;
+    var contratos = ViewData["contratos"] as List<inmobiliaria.Models.Contrato>;
+    
+    var psize = propietarios.Count;
 }
 
 <div class="text-center">
     <h1 class="display-4">Bienvenido!</h1>
-    <p>Aqui va una intro para la inmobiliaria.</p>
-    <p>Ademas hacia la izq debe estar la imagen de presentacion</p>
-    <p>luego a la derecha unos informes relevantes, Ej: Inmuebles registrados, Inmuebles disponibles, contratos pendientes, fechas de pagos, etc</p>
+    <br>
+    <h5 class="display-6">"Lavanda, tu hogar, tu refugio. Nuestro compromiso es hacerlo realidad" </h5> 
+</div>
+<hr />
+<div class="col-md-12">
+    <br>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-7">
+            <div class="row">
+                <img src="~/css/img/home_inmob.jpg" alt="home inmobiliara" class="img-home">
+            </div>
+        </div>
+        <div class="col-1">
+        </div>
+        <div class="col-4">
+            <div class="row">
+                <ul>
+                    <li>
+                        <h5>Propietarios : </h5><span>@propietarios.Count registrados</span>
+                    </li>
+                    <li>
+                        <h5>Inquilinos : </h5><span>@inquilinos.Count registrados</span>
+                    </li>
+                    <li>
+                        <h5>Inmuebles : </h5><span>@inmuebles.Count registrados</span>
+                    </li>
+                    <li>
+                        <h5>Contratos : </h5><span>@contratos.Count registrados</span>
+                    </li>
+                </ul>
+            </div>
+                @if(!User.Identity.IsAuthenticated){
+                    @await Html.PartialAsync("_Login")
+                }else{
+                    <h4 class="display-6">Hola usuario!</h4>
+                        <hr />
+                        <span><h5>Nombre: </h5>@User?.Claims.First(x => x.Type == "Nombre").Value</span>
+                        <br>
+                        <br>
+                        <span><h5>Rol : </h5>@(User.IsInRole("Administrador") ? "Administrador" : "Empleado")</span>
+                }
+            </div>
+    </div>
 </div>
