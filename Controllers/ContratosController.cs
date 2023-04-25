@@ -139,18 +139,22 @@ namespace inmobiliaria.Controllers
             int res = -1;
             try
             {
-                res = repositorioContrato.ActualizarContrato(contrato);
-                if (res > 0)
-                {
-                    TempData["Estado"] = true;
-                    TempData["Mensaje"] = "El contrato se actualizo correctamente";
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                {
-                    TempData["Estado"] = false;
-                    TempData["Mensaje"] = "El contrato no se pudo actualizar";
-                    return View(contrato);
+                if(ValidarFechasContrato(contrato)){
+                    res = repositorioContrato.ActualizarContrato(contrato);
+                    if (res > 0)
+                    {
+                        TempData["Estado"] = true;
+                        TempData["Mensaje"] = "El contrato se actualizo correctamente";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        TempData["Estado"] = false;
+                        TempData["Mensaje"] = "El contrato no se pudo actualizar";
+                        return View(contrato);
+                    }
+                }else{
+                    return RedirectToAction("Index");
                 }
             }
             catch (Exception ex)
@@ -183,7 +187,7 @@ namespace inmobiliaria.Controllers
         }
 
         // POST: Contratos/Delete/5
-         [Authorize (Policy = "Administrador")]
+        [Authorize (Policy = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Eliminar(int id, Contrato contrato)
@@ -237,6 +241,85 @@ namespace inmobiliaria.Controllers
                 }
             }
             return true;
+        }
+
+        public ActionResult PorInmueble(int id){
+            try{
+                Inmueble inmueble = repositorioInmueble.ObtenerInmueble(id);
+                if(inmueble == null){
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El inmueble solicitado no existe";
+                    return RedirectToAction("Index","Inmuebles");
+                }
+                List<Contrato> contratos = repositorioContrato.ObtenerContratosPorInmueble(id);
+            if(contratos == null){
+                TempData["Estado"] = false;
+                TempData["Mensaje"] = "No hay contratos para este inmueble";
+                return RedirectToAction("Index");
+            }else{
+                ViewData["buscar"] = "buscar";
+                return View("Index",contratos);
+            }
+            }catch(Exception ex){
+                throw;
+            }
+        }
+
+        [HttpPost]
+        public ActionResult FiltrarFecha(IFormCollection form){
+            string fechaInicio = form["FechaInicial"];
+            string fechaFin = form["FechaFinal"];
+            if(fechaInicio.Equals("") || fechaFin.Equals("")){
+                TempData["Estado"] = false;
+                TempData["Mensaje"] = "Debe seleccionar una fecha";
+                return RedirectToAction("Index");
+            }else{
+                try{
+                    var finicio = DateTime.Parse(fechaInicio);
+                    var ffin = DateTime.Parse(fechaFin);
+                    List<Contrato> contratos = repositorioContrato.ObtenerContratos();
+                    List<Contrato> contratosFiltrados = new List<Contrato>();
+                    foreach(var c in contratos){
+                        if(finicio <= c.FechaInicio && ffin >= c.FechaFin){
+                            contratosFiltrados.Add(c);
+                        }
+                    }
+                    ViewData["buscar"] = "buscar";
+                    return View("Index",contratosFiltrados);
+                }catch(Exception ex){
+                    throw;
+                }
+            }
+        }
+
+        //GET: Contratos/Renovar/5
+        public ActionResult Renovar(int id){
+            try{
+                Contrato contrato = repositorioContrato.ObtenerContrato(id);
+                if(contrato == null){
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El contrato solicitado no existe";
+                    return RedirectToAction("Index");
+                }else{
+                    Contrato nuevo = new Contrato();
+                    nuevo.InmuebleId = contrato.InmuebleId;
+                    nuevo.InquilinoId = contrato.InquilinoId;
+                    nuevo.MontoMensual = contrato.MontoMensual;
+                    nuevo.FechaInicio = contrato.FechaFin.AddDays(1);
+                    ViewData["ContratoRenovado"] = nuevo;
+                    List<Inmueble> Inmuebles = repositorioInmueble.ObtenerInmuebles();
+                    List<Propietario> Propietarios = repositorioPropietario.ObtenerPropietarios();
+                    List<Inquilino> Inquilinos = repositorioInquilino.ObtenerInquilinos();
+                    ViewData["Estado"] = TempData["Estado"];
+                    ViewData["Mensaje"] = TempData["Mensaje"];  
+                    ViewData["Inmuebles"] = Inmuebles;
+                    ViewData["Propietarios"] = Propietarios;
+                    ViewData["Inquilinos"] = Inquilinos;
+                    return View("Registrar",nuevo);
+                }
+            }catch(Exception ex){
+                throw;
+            }
         }
     }
 }

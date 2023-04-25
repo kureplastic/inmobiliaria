@@ -202,7 +202,7 @@ namespace inmobiliaria.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Editar(int id, Usuario usuario)
+        public async Task<ActionResult> Editar(int id, Usuario usuario)
         {
             int res = -1;
             try
@@ -217,6 +217,15 @@ namespace inmobiliaria.Controllers
                 {
                     TempData["Estado"] = true;
                     TempData["Mensaje"] = "Usuario modificado correctamente";
+                    //cambiar claims
+                    var identity = (ClaimsIdentity)User.Identity;
+			        identity.RemoveClaim(identity.FindFirst("Nombre"));
+                    identity.RemoveClaim(identity.FindFirst("Name"));
+			        identity.AddClaim(new Claim("Nombre", user.Nombre + " " + user.Apellido));
+                    identity.AddClaim(new Claim(ClaimTypes.Name, user.Email));
+                    await HttpContext.SignInAsync(
+				    CookieAuthenticationDefaults.AuthenticationScheme,
+				        new ClaimsPrincipal(identity));
                     return User.IsInRole("Administrador") ?  RedirectToAction("Index") : RedirectToAction("Perfil");
                 }
                 else
@@ -471,5 +480,6 @@ namespace inmobiliaria.Controllers
         {
             return View();
         }
+
     }
 }

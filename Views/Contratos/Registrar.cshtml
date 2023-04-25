@@ -5,6 +5,7 @@
     var propietarios = (IList<Propietario>)ViewData["Propietarios"];
     var inmuebles = (IList<Inmueble>)ViewData["Inmuebles"];
     var inquilinos = (IList<Inquilino>)ViewData["Inquilinos"];
+    Contrato? contratoRenovado = ViewData["ContratoRenovado"] as inmobiliaria.Models.Contrato;
 }
 
 <h1>Registrar</h1>
@@ -21,7 +22,14 @@
                     <option value="">Seleccione un Inquilino</option>
 					@foreach (var item in inquilinos)
 					{
-						<option value="@item.Id">@(item.ToString())</option>
+                        @if(contratoRenovado == null){
+                        <option value="@item.Id">@(item.ToString())</option>
+                        }else if(contratoRenovado.InquilinoId == item.Id){
+                        <option selected value="@item.Id">@(item.ToString())</option>
+                        }else{
+                        <option value="@item.Id">@(item.ToString())</option>
+                        }
+						
 					}
 				</select>
                 <span asp-validation-for="InquilinoId" class="text-danger"></span>
@@ -32,7 +40,13 @@
                     <option value="">Seleccione un Inmueble</option>
 					@foreach (var item in inmuebles)
 					{
-						<option value="@item.Id">@(item.ToString())</option>
+                        if(contratoRenovado == null){
+                        <option value="@item.Id">@(item.ToString())</option>
+                        }else if(contratoRenovado.InmuebleId == item.Id){
+                        <option selected value="@item.Id">@(item.ToString())</option>
+                        }else{
+                        <option value="@item.Id">@(item.ToString())</option>
+                        }
 					}
 				</select>
                 <span asp-validation-for="InmuebleId" class="text-danger"></span>
@@ -44,16 +58,9 @@
             </div>
             <div class="form-group">
                 <label asp-for="FechaFin" class="control-label"></label>
-                <input type="date" asp-for="FechaFin" class="form-control" required/>
+                <input type="date" asp-for="FechaFin" value="" class="form-control" required/>
                 <span asp-validation-for="FechaFin" class="text-danger"></span>
             </div>
-           @if (Model!= null){
-                <div class="form-group">
-                <label asp-for="MontoMensual" class="control-label"></label>
-                <input asp-for="MontoMensual" value ="5" class="form-control" required/>
-                <span asp-validation-for="MontoMensual" class="text-danger"></span>
-            </div>
-            }
             <div class="form-group">
                 <label asp-for="MontoMensual" class="control-label"></label>
                 <input asp-for="MontoMensual" class="form-control" required/>

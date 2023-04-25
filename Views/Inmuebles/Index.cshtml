@@ -10,31 +10,47 @@
     </p>
 </div>
 <hr />
-<div>
-<br>
-<span>form para filtros de inmuebles</span>
-<div class="row">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4">
-            <div class="card text-bg-dark mb-3" style="max-width: 400px;" >
-                <img class="card-img-top" src="css/img/lav_default.png" alt="Imagen del Inmueble">
-                <div class="card-body">
-                    <h4>@Html.DisplayFor(modelItem => item.Direccion)</h4>
-                    <p class="card-text "><strong>@Html.DisplayNameFor(model => model.Precio)</strong> : $ @Html.DisplayFor(modelItem => item.Precio)</p>
-                    <p class="card-text"><strong>Propietario</strong> : @(item.propietario.ToString())</p>
-                    <p class="card-text"><strong>@Html.DisplayNameFor(model => model.Tipo)</strong> : @Html.DisplayFor(modelItem => item.Tipo)</p>
-                    <p class="card-text"><strong>@Html.DisplayNameFor(model => model.Estado)</strong> : @if (item.Estado) { <span class="text-success">Disponible</span> } else { <span class="text-danger">No Disponible</span> }</p>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="btn-group">
-                            <a class="btn btn-sm btn-outline-light" asp-action="Detalles" asp-route-id="@item.Id">Detalles</a>
-                            <a class="btn btn-sm btn-outline-light" asp-action="Editar" asp-route-id="@item.Id">Editar</a>
-                            <a class="btn btn-sm btn-outline-light" asp-action="Eliminar" asp-route-id="@item.Id">Eliminar</a>
-                        </div>
-                        <small class="text-muted">Generar Contrato</small>
-                    </div>
-                </div>
+@if(ViewData["buscar"] == null){
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <a class="link-light text-center" asp-area="" asp-action="Disponibles" ><button class="btn btn-dark">Filtrar Disponibles</button></a>
             </div>
         </div>
+    </div>
+    <hr />
+}
+<div class="row">
+    @if(Model.Any()){
+        @foreach (var item in Model)
+        {
+            <div class="col-md-3">
+                <div class="card bg-dark text-white" style="width: 300px; height: 300px;" >
+                        <img  src="~/css/img/lav_default.png" class="card-img" style="max-width: 300px; opacity: 0.5" alt="Imagen del Inmueble">
+                        <div class="card-img-overlay">
+                            <h4>@Html.DisplayFor(modelItem => item.Direccion)</h4>
+                            <p class="card-text "><strong>@Html.DisplayNameFor(model => model.Precio)</strong> : $ @Html.DisplayFor(modelItem => item.Precio)</p>
+                            <p class="card-text"><strong>Propietario</strong> : @(item.propietario.ToString())</p>
+                            <p class="card-text"><strong>@Html.DisplayNameFor(model => model.Tipo)</strong> : @Html.DisplayFor(modelItem => item.Tipo)</p>
+                            <p class="card-text"><strong>@Html.DisplayNameFor(model => model.Estado)</strong> : @if (item.Estado) { <span class="text-success">Disponible</span> } else { <span class="text-danger">No Disponible</span> }</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <a class="btn btn-sm btn-outline-light" asp-action="Detalles" asp-route-id="@item.Id">Detalles</a>
+                                    <a class="btn btn-sm btn-outline-light" asp-action="Editar" asp-route-id="@item.Id">Editar</a>
+                                    <a class="btn btn-sm btn-outline-light" asp-action="Eliminar" asp-route-id="@item.Id">Eliminar</a>
+                                </div>
+                                <a style="text-decoration: none" class="link-light text-center" asp-action="PorInmueble" asp-controller="Contratos" asp-route-id="@item.Id"><small class="text-muted">Ver Contratos</small></a>
+                            </div>
+                            
+                        </div>
+                </div>
+            </div>
+        }
+    }else{
+        <p>No hay Inmuebles registrados</p>
     }
 </div>
+<br>
+@if(ViewData["buscar"] != null){
+        <a class="link-light text-center" asp-area="" asp-action="Index" ><button class="btn btn-dark">Volver</button></a>
+    }

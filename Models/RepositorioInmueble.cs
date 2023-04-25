@@ -138,4 +138,42 @@ public class RepositorioInmueble
         }
         return res;
     }
+
+    public List<Inmueble> ObtenerInmueblesPorPropietario(int id){
+        List<Inmueble> inmuebles = new List<Inmueble>();
+        using (MySqlConnection connection = new MySqlConnection(connectionString)){
+            var query = @"SELECT i.Id, Direccion, Tipo, Ambientes, Precio, Estado, PropietarioId,
+                        p.Nombre, p.Apellido, p.Dni 
+                        FROM inmuebles i
+                        INNER JOIN propietarios p 
+                        ON i.PropietarioId = p.Id
+                        WHERE p.Id = @id";
+            using (MySqlCommand command = new MySqlCommand(query, connection)){
+                command.CommandType = CommandType.Text;
+                command.Parameters.AddWithValue("@id", id);
+                connection.Open();
+                var reader = command.ExecuteReader();
+                while (reader.Read()){
+                    Inmueble inmueble = new Inmueble{
+                        Id = Convert.ToInt32(reader["Id"]),
+                        Direccion = reader["Direccion"].ToString(),
+                        Tipo = reader["Tipo"].ToString(),
+                        Ambientes = Convert.ToInt32(reader["Ambientes"]),
+                        Precio = Convert.ToDecimal(reader["Precio"]),
+                        Estado = Convert.ToBoolean(reader["Estado"]),
+                        PropietarioId = Convert.ToInt32(reader["PropietarioId"]),
+                        propietario = new Propietario{
+                            Id = Convert.ToInt32(reader["PropietarioId"]),
+                            Nombre = reader["Nombre"].ToString(),
+                            Apellido = reader["Apellido"].ToString(),
+                            Dni = reader["Dni"].ToString()
+                        }
+                    };
+                    inmuebles.Add(inmueble);
+                }
+                connection.Close();
+            }
+        }
+        return inmuebles;
+    }
 }

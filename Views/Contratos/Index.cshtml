@@ -11,7 +11,22 @@
 </p>
 <hr />
 </div>
-<span>form para filtros de contratos quizas</span>
+@if(ViewData["buscar"] == null){
+   <div class="container">
+    <form asp-action="FiltrarFecha">
+        <div class="row align-items-center">
+            <div class="col-auto"><label for="FechaInicial" class="control-label">Fecha Inicial: </label></div>
+            <div class="col-auto"><input type="date" name="FechaInicial" class="form-control" id=""></div>
+            <div class="col-auto"><label for="FechaFinal" class="control-label">Fecha Final: </label></div>
+            <div class="col-auto"><input type="date" name="FechaFinal" class="form-control" id=""></div>
+            <div class="col-3 text-center"><input type="submit" value="Filtrar por Fechas" class="btn btn-dark"></div>
+        </div>
+    </form>
+    <hr />
+    </div> 
+}
+
+
 <table class="table">
     <thead>
         <tr>
@@ -39,8 +54,10 @@
             <th></th>
         </tr>
     </thead>
+    
     <tbody>
-@foreach (var item in Model) {
+    @if(Model.Any()){
+    @foreach (var item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -70,6 +87,14 @@
                 <a class="link-dark text-center" asp-action="PagosPorContrato" asp-controller="Pagos" asp-route-id="@item.Id" title="Ver Pagos"><span >PagosPorContrato</span></a>
             </td>
         </tr>
-}
+    }
+    }else{
+        <p>No hay contratos registrados</p>
+    }
     </tbody>
+
 </table>
+<br>
+@if(ViewData["buscar"] != null){
+        <a class="link-light text-center" asp-action="Index" ><button class="btn btn-dark">Volver</button></a>
+    }

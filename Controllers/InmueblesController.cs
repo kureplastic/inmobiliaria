@@ -181,5 +181,47 @@ namespace inmobiliaria.Controllers
                 throw;
             }
         }
-    }
+
+        public ActionResult PorPropietario(int id){
+            try{
+                Propietario propietario = repositorioPropietario.ObtenerPropietario(id);
+                if(propietario == null){
+                    TempData["Estado"] = false;
+                    TempData["Mensaje"] = "El propietario no existe";
+                    return RedirectToAction("Index");
+                }
+                else{
+                    List<Inmueble> inmuebles = repositorioInmueble.ObtenerInmueblesPorPropietario(id);
+                    if(inmuebles == null){
+                        TempData["Estado"] = false;
+                        TempData["Mensaje"] = "No se encontraron inmuebles para este propietario";
+                        return RedirectToAction("Index","Propietarios");
+                    }
+                    else{
+                        ViewData["buscar"] = "buscar";
+                        return View("Index",inmuebles);
+                    }
+                }
+            }catch(Exception ex){
+                throw;
+            }
+        }
+
+        public ActionResult Disponibles(){
+            try{
+                List<Inmueble> inmuebles = repositorioInmueble.ObtenerInmuebles();
+                List<Inmueble> disponibles = new List<Inmueble>();
+                foreach(Inmueble inmueble in inmuebles){
+                    if(inmueble.Estado){
+                        disponibles.Add(inmueble);
+                    }
+                }
+                ViewData["buscar"] = "buscar";
+                return View("Index",disponibles);
+
+            }catch(Exception ex){
+                throw;
+            }
+        }
+    } 
 }
