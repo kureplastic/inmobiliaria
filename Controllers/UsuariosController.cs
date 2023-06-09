@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Inmobiliaria_.Net_Core.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using inmobiliaria.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace inmobiliaria.Controllers
 {
@@ -20,13 +22,18 @@ namespace inmobiliaria.Controllers
     public class UsuariosController : Controller
     {
         private readonly IWebHostEnvironment environment;
+        private readonly DataContext _context;
+        private readonly IConfiguration _configuration;
         private static string MISALT = "Este es mi salt para hashear passwords, muy largo salt!";
+        
         private readonly RepositorioUsuario repositorioUsuario;
 
-        public UsuariosController(IWebHostEnvironment environment)
+        public UsuariosController(IWebHostEnvironment environment, DataContext context, IConfiguration configuration)
         {
             this.environment = environment;
             repositorioUsuario = new RepositorioUsuario();
+            _context = context;
+            _configuration = configuration;
         }
         [Authorize(Policy = "Administrador")]
         // GET: Usuarios
@@ -427,7 +434,7 @@ namespace inmobiliaria.Controllers
                         iterationCount: 1000,
                         numBytesRequested: 256 / 8));
 
-                    var user = repositorioUsuario.ObtenerUsuarioPorEmail(login.Usuario);
+                    var user = repositorioUsuario.ObtenerUsuarioPorEmail(login.Email);
                     if (user == null || user.Clave != hashed)
                     {
                         ModelState.AddModelError("", "El email o la clave no son correctos");
@@ -480,6 +487,58 @@ namespace inmobiliaria.Controllers
         {
             return View();
         }
+
+        //POST api/<controller>/login
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<IActionResult> LoginParaPropietario(LoginView loginView)
+    {
+        try
+        {
+
+            var usuario = _context.Usuario.FirstOrDefault(x => x.Email == loginView.Email);
+            if(usuario == null){
+                return NotFound();
+            }
+
+            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: loginView.Clave,
+                salt: System.Text.Encoding.ASCII.GetBytes(MISALT),
+                prf: KeyDerivationPrf.HMACSHA1,
+                iterationCount: 30000,
+                numBytesRequested: 256 / 8));
+            var p = await _context.Usuario.FirstOrDefaultAsync(x => x.Email == loginView.Email);
+            if (p == null || p.Clave != hashed)
+            {
+                return BadRequest("Nombre de usuario o clave incorrecta");
+            }
+            else
+            {
+                var key = new SymmetricSecurityKey(
+                    System.Text.Encoding.ASCII.GetBytes(_configuration["TokenAuthentication:SecretKey"]));
+                var credenciales = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, p.Email),
+                        new Claim("FullName", p.Nombre + " " + p.Apellido),
+                        new Claim(ClaimTypes.Role, "Propietario"),
+                    };
+
+                var token = new JwtSecurityToken(
+                    issuer: _configuration["TokenAuthentication:Issuer"],
+                    audience: _configuration["TokenAuthentication:Audience"],
+                    claims: claims,
+                    expires: DateTime.Now.AddMinutes(60),
+                    signingCredentials: credenciales
+                );
+                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+            }
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 
     }
 }

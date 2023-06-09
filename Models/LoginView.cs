@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Inmobiliaria_.Net_Core.Models
+namespace inmobiliaria.Models
 {
 	public class LoginView
 	{
 		[DataType(DataType.EmailAddress)]
-		public string Usuario { get; set; }
+		public string Email { get; set; }
 		[DataType(DataType.Password)]
 		public string Clave { get; set; }
 	}

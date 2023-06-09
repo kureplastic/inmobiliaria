@@ -19,6 +19,7 @@ public class Propietario
     public string? Telefono { get; set; }
     [Required]
     public string Email { get; set; }
+    public string? Clave { get; set; }
 
 
   public Propietario(){
@@ -28,6 +29,7 @@ public class Propietario
         Nombre = "";
         Telefono = "";
         Email = "";
+        Clave = "";
     }
     
    public override string ToString() => $"{Apellido} {Nombre} ({Dni})";

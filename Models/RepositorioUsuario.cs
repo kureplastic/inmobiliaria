@@ -1,5 +1,4 @@
 using System.Data;
-using Inmobiliaria_.Net_Core.Models;
 using MySql.Data.MySqlClient;
 
 namespace inmobiliaria.Models;
